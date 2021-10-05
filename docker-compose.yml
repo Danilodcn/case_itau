@@ -1,0 +1,43 @@
+version: "3.1"
+
+services:
+    redis:
+        image: "redis:$REDIS_VERSION"
+        container_name: redis
+        command: "redis-server --requirepass $REDIS_PASSWORD"
+        deploy:
+            resources:
+                limits:
+                    memory: "$REDIS_MEMORY_MAX"
+                    cpus:   "$REDIS_CPU_MAX"
+                reservations:
+                    memory: "$REDIS_MEMORY_MIN"
+                    cpus:   "$REDIS_CPU_MIN"
+        restart: always
+        ports:
+            - "$REDIS_PORT_OUTPUT:6379"
+        volumes:
+            - "$REDIS_PATH_TO_SAVE:/data"
+
+
+    mongo:
+        image: "mongo:$MONGO_VERSION"
+        container_name: mongo
+        environment:
+            - "MONGO_INITDB_ROOT_USERNAME:$MONGO_USERNAME"
+            - "MONGO_INITDB_ROOT_PASSWORD:$MONGO_PASSWORD"
+        deploy:
+            resources:
+                limits:
+                    memory: "$MONGO_MEMORY_MAX"
+                    cpus:   "$MONGO_CPU_MAX"
+                reservations:
+                    memory: "$MONGO_MEMORY_MIN"
+                    cpus:   "$MONGO_CPU_MIN"
+        restart: always
+        ports:
+            - 27017:27017
+        volumes:
+            - "$MONGO_PATH_TO_SAVE:/data/db"
+
+
